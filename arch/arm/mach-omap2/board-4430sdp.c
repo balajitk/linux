@@ -526,8 +526,12 @@ static int __init omap4_twl6030_hsmmc_init(struct omap2_hsmmc_info *controllers)
 	struct omap2_hsmmc_info *c;
 
 	omap_hsmmc_init(controllers);
-	for (c = controllers; c->mmc; c++)
+	for (c = controllers; c->mmc; c++) {
+		/* pdev can be null if CONFIG_MMC_OMAP_HS is not set */
+		if (!c->pdev)
+			continue;
 		omap4_twl6030_hsmmc_set_late_init(&c->pdev->dev);
+	}
 
 	return 0;
 }
